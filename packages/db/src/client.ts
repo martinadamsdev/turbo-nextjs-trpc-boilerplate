@@ -1,7 +1,17 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-
+import postgres from "postgres";
 import * as schema from "./schema";
 
-const databaseUrl = `${process.env.DATABASE_URL}`;
+// Default database URL for development
+const defaultDatabaseUrl = "postgres://postgres:postgres@localhost:5433/postgres";
+const databaseUrl = process.env.DATABASE_URL || defaultDatabaseUrl;
 
-export const db = drizzle(databaseUrl, { schema });
+// Create database connection
+const client = postgres(databaseUrl, {
+  max: 1,
+  idle_timeout: 20,
+  connect_timeout: 10,
+});
+
+// Create database instance
+export const db = drizzle(client, { schema });

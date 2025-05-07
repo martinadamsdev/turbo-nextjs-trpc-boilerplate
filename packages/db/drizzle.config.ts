@@ -1,15 +1,18 @@
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
+// Helper function to redact sensitive information from database URL
 const redacted = (str: string) => {
   return str
     .replace(/:\/\/(.*?):(.*?)@/, "://***:***@")
     .replace(/@(.+?):/, "@***:");
 };
 
-const databaseUrl = `${process.env.DATABASE_URL}`;
+// Default database URL for development environment
+const defaultDatabaseUrl = "postgres://postgres:postgres@localhost:5433/postgres";
+const databaseUrl = process.env.DATABASE_URL || defaultDatabaseUrl;
 
-console.log(`initializing db with ${redacted(databaseUrl)}`);
+console.log(`Initializing database with ${redacted(databaseUrl)}`);
 
 export default defineConfig({
   out: "./drizzle",
